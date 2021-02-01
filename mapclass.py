@@ -30,7 +30,8 @@ class YandexMap:
         self.centercoords = centercoords
 
     def set_scale(self, scale):
-        self.scale = scale
+        if 0.1 < scale[0] <= 15 and 0.1 < scale[1] <= 15:
+            self.scale = scale
 
     def change_type(self, type):
         self.type = type
