@@ -12,7 +12,9 @@ class YandexMap:
     def get_map(self):
         params = {'ll': ','.join([str(i) for i in self.centercoords]),
                  'spn': ','.join([str(i) for i in self.scale]),
-                 'l': 'map'}
+                 'l': 'map',
+                  'size':'800,800'}
+
         response = requests.get(self.api_server, params=params)
         return BytesIO(response.content)
 
