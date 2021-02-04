@@ -10,7 +10,6 @@ class YandexMap:
         self.type = 'map'
         self.points = []
 
-
     def get_map(self):
         params = {'ll': ','.join([str(i) for i in self.centercoords]),
                  'spn': ','.join([str(i) for i in self.scale]),
@@ -22,7 +21,7 @@ class YandexMap:
                 params['pt'] = point
             else:
                 params['pt'] += '~' + point
-
+        print(self.centercoords)
         response = requests.get(self.api_server, params=params)
         return response.content
 
@@ -45,7 +44,6 @@ class YandexMap:
             "format": "json"}
 
         response = requests.get(geocoder_api_server, params=geocoder_params)
-
         # Преобразуем ответ в json-объект
         json_response = response.json()
         # Получаем первый топоним из ответа геокодера.
@@ -54,7 +52,7 @@ class YandexMap:
 
         # Координаты центра топонима:
         toponym_coodrinates = toponym["Point"]["pos"]
-
+        print(toponym_coodrinates)
         return toponym_coodrinates
 
     def add_point(self, coords):
