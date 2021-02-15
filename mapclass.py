@@ -1,5 +1,4 @@
 import requests
-from io import BytesIO
 
 
 class YandexMap:
@@ -12,8 +11,8 @@ class YandexMap:
 
     def get_map(self):
         params = {'ll': ','.join([str(i) for i in self.centercoords]),
-                 'spn': ','.join([str(i) for i in self.scale]),
-                 'l': self.type}
+                  'spn': ','.join([str(i) for i in self.scale]),
+                  'l': self.type}
 
         for i in self.points:
             point = ','.join([str(j) for j in i]) + ',org'
@@ -21,7 +20,6 @@ class YandexMap:
                 params['pt'] = point
             else:
                 params['pt'] += '~' + point
-        print(self.centercoords)
         response = requests.get(self.api_server, params=params)
         return response.content
 
@@ -52,9 +50,7 @@ class YandexMap:
 
         # Координаты центра топонима:
         toponym_coodrinates = toponym["Point"]["pos"]
-        print(toponym_coodrinates)
         return toponym_coodrinates
 
     def add_point(self, coords):
         self.points.append(coords)
-

@@ -1,10 +1,9 @@
-import os
 import sys
-from mapclass import *
-
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QCheckBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit
+
+from mapclass import *
 
 SCREEN_SIZE = [600, 600]
 
@@ -42,6 +41,32 @@ class Example(QWidget):
         self.change_schema_button.setText('Поменять схему')
         self.change_schema_button.clicked.connect(self.change_schema)
 
+        # кнопки, отвечающие за смещение карты. Пришлось сделать кнопками, так как прекрасный qt не может адекватно
+        # обрабатывать нажатия, если в окне есть поле для ввода.
+        self.move_map_up_btn = QPushButton(self)
+        self.move_map_up_btn.move(500, 500)
+        self.move_map_up_btn.resize(40, 40)
+        self.move_map_up_btn.setText('Up')
+        self.move_map_up_btn.clicked.connect(self.move_map)
+
+        self.move_map_down_btn = QPushButton(self)
+        self.move_map_down_btn.move(500, 540)
+        self.move_map_down_btn.resize(40, 40)
+        self.move_map_down_btn.setText('Down')
+        self.move_map_down_btn.clicked.connect(self.move_map)
+
+        self.move_map_left_btn = QPushButton(self)
+        self.move_map_left_btn.move(460, 540)
+        self.move_map_left_btn.resize(40, 40)
+        self.move_map_left_btn.setText('Left')
+        self.move_map_left_btn.clicked.connect(self.move_map)
+
+        self.move_map_right_btn = QPushButton(self)
+        self.move_map_right_btn.move(540, 540)
+        self.move_map_right_btn.resize(40, 40)
+        self.move_map_right_btn.setText('Right')
+        self.move_map_right_btn.clicked.connect(self.move_map)
+
         # Инициализация поля ввода
         self.toponym = QLineEdit(self)
         self.toponym.move(10, 10)
@@ -69,29 +94,34 @@ class Example(QWidget):
         self.app.change_type(self.schemas[self.index_of_schema])
         self.getImage()
 
-    # Обработка кнопок. Вместо стрелок необходимо использовать W, A, S, D
+    # метод для смещения карты
+    def move_map(self):
+        sender = self.sender().text()
+        if sender == 'Left':
+            lon = self.app.centercoords[0] - int(self.app.scale[0]) * 0.0051 * 600
+            self.app.set_centercoords([lon, self.app.centercoords[1]])
+            self.getImage()
+        if sender == 'Up':
+            lat = self.app.centercoords[1] + int(self.app.scale[0]) * 0.00286 * 450
+            self.app.set_centercoords([self.app.centercoords[0], lat])
+            self.getImage()
+        if sender == 'Right':
+            lon = self.app.centercoords[0] + int(self.app.scale[0]) * 0.0051 * 600
+            self.app.set_centercoords([lon, self.app.centercoords[1]])
+            self.getImage()
+        if sender == 'Down':
+            lat = self.app.centercoords[1] - int(self.app.scale[0]) * 0.00286 * 450
+            self.app.set_centercoords([self.app.centercoords[0], lat])
+            self.getImage()
+
+    # Обработка кнопок
     def keyPressEvent(self, event):
+        # масштабирование карты на нажатия pg up/pg down
         if event.key() == 16777238:
             self.app.set_scale((self.app.scale[0] + 1, self.app.scale[1] + 1))
             self.getImage()
         if event.key() == 16777239:
             self.app.set_scale((self.app.scale[0] - 1, self.app.scale[1] - 1))
-            self.getImage()
-        if event.key() == 65 or event.key() == 1060:
-            lon = self.app.centercoords[0] - int(self.app.scale[0]) * 0.0051 * 600
-            self.app.set_centercoords([lon, self.app.centercoords[1]])
-            self.getImage()
-        if event.key() == 87 or event.key() == 1062:
-            lat = self.app.centercoords[1] + int(self.app.scale[0]) * 0.00286 * 450
-            self.app.set_centercoords([self.app.centercoords[0], lat])
-            self.getImage()
-        if event.key() == 68 or event.key() == 1042:
-            lon = self.app.centercoords[0] + int(self.app.scale[0]) * 0.0051 * 600
-            self.app.set_centercoords([lon, self.app.centercoords[1]])
-            self.getImage()
-        if event.key() == 83 or event.key() == 1067:
-            lat = self.app.centercoords[1] - int(self.app.scale[0]) * 0.00286 * 450
-            self.app.set_centercoords([self.app.centercoords[0], lat])
             self.getImage()
 
 
