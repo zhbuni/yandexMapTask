@@ -54,3 +54,6 @@ class YandexMap:
 
     def add_point(self, coords):
         self.points.append(coords)
+
+    def clear_points(self):
+        self.points = []

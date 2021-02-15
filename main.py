@@ -79,6 +79,12 @@ class Example(QWidget):
         self.find_toponym_button.setText('Искать')
         self.find_toponym_button.clicked.connect(self.find_toponym)
 
+        self.find_toponym_button = QPushButton(self)
+        self.find_toponym_button.move(300, 10)
+        self.find_toponym_button.resize(200, 20)
+        self.find_toponym_button.setText('Сброс поискового результата')
+        self.find_toponym_button.clicked.connect(self.reset_toponym)
+
     # Метод поиска топонима и его вывода на экран
     def find_toponym(self):
         text = self.toponym.text()
@@ -123,6 +129,10 @@ class Example(QWidget):
         if event.key() == 16777239:
             self.app.set_scale((self.app.scale[0] - 1, self.app.scale[1] - 1))
             self.getImage()
+
+    def reset_toponym(self):
+        self.app.clear_points()
+        self.getImage()
 
 
 if __name__ == '__main__':
