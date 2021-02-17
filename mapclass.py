@@ -1,4 +1,5 @@
 import requests
+from pprint import pprint
 
 
 class YandexMap:
@@ -50,7 +51,31 @@ class YandexMap:
 
         # Координаты центра топонима:
         toponym_coodrinates = toponym["Point"]["pos"]
-        return toponym_coodrinates
+
+        # получаем адрес и почтовый код по координатам
+        geocoder_params = {
+            "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+            "geocode": ','.join(toponym_coodrinates.split()),
+            "format": "json"}
+
+        address = requests.get(geocoder_api_server, params=geocoder_params).json()
+        address = address['response']['GeoObjectCollection']['featureMember'][0]['GeoObject'][
+            'metaDataProperty']['GeocoderMetaData']['Address']\
+
+        # координаты у нас есть всегда, но вот адреса или почтового кода может не быть
+        res = [toponym_coodrinates]
+
+        if 'formatted' in address:
+            res.append(address['formatted'])
+        else:
+            res.append('')
+
+        if 'postal_code' in address:
+            res.append(address['postal_code'])
+        else:
+            res.append('')
+
+        return res
 
     def add_point(self, coords):
         self.points.append(coords)

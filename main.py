@@ -87,9 +87,10 @@ class Example(QWidget):
 
     # Метод поиска топонима и его вывода на экран
     def find_toponym(self):
-        text = self.toponym.text()
+        text = self.toponym.text().strip()
         if text:
-            coords = [float(el) for el in self.app.find_object(text).split()]
+            coords, address, postal_code = self.app.find_object(text)
+            coords = [float(el) for el in coords.split()]
             self.app.set_centercoords(coords)
             self.app.add_point(coords)
             self.getImage()
