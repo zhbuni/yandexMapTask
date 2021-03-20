@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QCheckBox
 
 from mapclass import *
 
@@ -86,19 +86,27 @@ class Example(QWidget):
         self.find_toponym_button.clicked.connect(self.reset_toponym)
 
         self.addressline = QLineEdit(self)
-        self.addressline.move(10, 40)
+        self.addressline.move(10, 60)
         self.addressline.resize(200, 20)
         self.addressline.setText('Адрес будет здесь')
         self.addressline.setReadOnly(True)
+
+        self.show_postal_box = QCheckBox(self)
+        self.show_postal_box.move(10, 40)
+        self.show_postal_box.setText('Приписывать почтовый индекс')
+        self.show_postal_box.stateChanged.connect(self.find_toponym)
+
 
     # Метод поиска топонима и его вывода на экран
     def find_toponym(self):
         text = self.toponym.text().strip()
         if text:
             coords, address, postal_code = self.app.find_object(text)
-            self.addressline.setText('')
-            if address:
-                self.addressline.setText(address)
+            addressline_text = ''
+            addressline_text += address
+            if self.show_postal_box.checkState():
+                addressline_text += postal_code
+            self.addressline.setText(addressline_text)
             coords = [float(el) for el in coords.split()]
             self.app.set_centercoords(coords)
             self.app.add_point(coords)
