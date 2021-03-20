@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdi
 
 from mapclass import *
 
-SCREEN_SIZE = [600, 600]
+SCREEN_SIZE = [600, 700]
 
 
 class Example(QWidget):
@@ -30,13 +30,13 @@ class Example(QWidget):
         self.image = QLabel(self)
         self.getImage()
         self.pixmap.loadFromData(self.map_file)
-        self.image.move(0, 40)
+        self.image.move(0, 140)
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
 
         # Инициализация кнопки смены схемы
         self.change_schema_button = QPushButton(self)
-        self.change_schema_button.move(10, 500)
+        self.change_schema_button.move(10, 600)
         self.change_schema_button.resize(120, 20)
         self.change_schema_button.setText('Поменять схему')
         self.change_schema_button.clicked.connect(self.change_schema)
@@ -44,25 +44,25 @@ class Example(QWidget):
         # кнопки, отвечающие за смещение карты. Пришлось сделать кнопками, так как прекрасный qt не может адекватно
         # обрабатывать нажатия, если в окне есть поле для ввода.
         self.move_map_up_btn = QPushButton(self)
-        self.move_map_up_btn.move(500, 500)
+        self.move_map_up_btn.move(500, 600)
         self.move_map_up_btn.resize(40, 40)
         self.move_map_up_btn.setText('Up')
         self.move_map_up_btn.clicked.connect(self.move_map)
 
         self.move_map_down_btn = QPushButton(self)
-        self.move_map_down_btn.move(500, 540)
+        self.move_map_down_btn.move(500, 640)
         self.move_map_down_btn.resize(40, 40)
         self.move_map_down_btn.setText('Down')
         self.move_map_down_btn.clicked.connect(self.move_map)
 
         self.move_map_left_btn = QPushButton(self)
-        self.move_map_left_btn.move(460, 540)
+        self.move_map_left_btn.move(460, 640)
         self.move_map_left_btn.resize(40, 40)
         self.move_map_left_btn.setText('Left')
         self.move_map_left_btn.clicked.connect(self.move_map)
 
         self.move_map_right_btn = QPushButton(self)
-        self.move_map_right_btn.move(540, 540)
+        self.move_map_right_btn.move(540, 640)
         self.move_map_right_btn.resize(40, 40)
         self.move_map_right_btn.setText('Right')
         self.move_map_right_btn.clicked.connect(self.move_map)
@@ -85,11 +85,20 @@ class Example(QWidget):
         self.find_toponym_button.setText('Сброс поискового результата')
         self.find_toponym_button.clicked.connect(self.reset_toponym)
 
+        self.addressline = QLineEdit(self)
+        self.addressline.move(10, 40)
+        self.addressline.resize(200, 20)
+        self.addressline.setText('Адрес будет здесь')
+        self.addressline.setReadOnly(True)
+
     # Метод поиска топонима и его вывода на экран
     def find_toponym(self):
         text = self.toponym.text().strip()
         if text:
             coords, address, postal_code = self.app.find_object(text)
+            self.addressline.setText('')
+            if address:
+                self.addressline.setText(address)
             coords = [float(el) for el in coords.split()]
             self.app.set_centercoords(coords)
             self.app.add_point(coords)
@@ -133,6 +142,7 @@ class Example(QWidget):
 
     def reset_toponym(self):
         self.app.clear_points()
+        self.addressline.setText('')
         self.getImage()
 
 
